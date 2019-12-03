@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <title>New election</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>New election</h1>
+    <form data-bind="submit: submitElection">
+        <h2>Basic information</h2>
+        <div class="form-group">
+            <label for="titleField">Title</label>
+            <input type="text" name="title" class="form-control" id="titleField"
+                   data-bind="value: model.title" required>
+        </div>
+        <div class="form-group">
+            <label for="descriptionField">Description</label>
+            <textarea class="form-control" name="description" id="descriptionField"
+                      data-bind="value: model.description" rows="5"></textarea>
+        </div>
+
+        <h2>Candidates</h2>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col"><button class="btn btn-success" data-bind="click: addCandidate">+</button></th>
+                </tr>
+            </thead>
+            <tbody class="table-striped" data-bind="foreach: model.candidates">
+                <tr>
+                    <td><input type="text" class="form-control" data-bind="value: name" required></td>
+                    <td><textarea class="form-control" rows="2" data-bind="value: description"></textarea></td>
+                    <td><button type="button" class="btn btn-danger" data-bind="click: $parent.removeCandidate">×</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary" name="submit" value="submit">Create</button>
+    </form>
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/knockout.js}"></script>
+<script>
+    function NewCandidate() {
+        var self = this;
+        self.name = ko.observable("");
+        self.description = ko.observable("");
+    }
+    function NewElectionViewModel() {
+        var self = this;
+        self.model = {
+            title: ko.observable(""),
+            description: ko.observable(""),
+            candidates: ko.observableArray([])
+        };
+        self.addCandidate = function () {
+            self.model.candidates.unshift(new NewCandidate());
+        };
+        self.removeCandidate = function (candidate) {
+            self.model.candidates.remove(candidate);
+        };
+        self.submitElection = function () {
+            $.ajax({
+                type: "POST",
+                url: "/api/elections",
+                data: ko.toJSON(self.model),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            }).done(function () {
+                window.location.replace("/elections");
+            }).fail(function (xhr, status) {
+                console.log(status, xhr);
+            });
+        }
+    }
+    ko.applyBindings(new NewElectionViewModel());
+</script>
+</body>
+</html>

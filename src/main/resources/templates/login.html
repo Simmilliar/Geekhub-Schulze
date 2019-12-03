@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <title>Login</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>Login</h1>
+    <div class="alert alert-danger" role="alert"
+         th:if="${session[SPRING_SECURITY_LAST_EXCEPTION] != null and session[SPRING_SECURITY_LAST_EXCEPTION].message != null}"
+         th:text="${session[SPRING_SECURITY_LAST_EXCEPTION].message}">
+    </div>
+    <form name="f" action="/login" method="post">
+        <div class="form-group">
+            <label for="loginField">Login</label>
+            <input type="text" name="username" class="form-control" id="loginField" required>
+        </div>
+        <div class="form-group">
+            <label for="passwordField">Password</label>
+            <input type="password" name="password" class="form-control" id="passwordField" required>
+        </div>
+        <button type="submit" class="btn btn-primary" name="submit" value="submit">Login</button>
+    </form>
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

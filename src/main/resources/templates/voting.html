@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <title>Voting</title>
+</head>
+<body>
+
+<div class="container">
+    <h1 data-bind="text: election.title"></h1>
+    <p><span class="badge" data-bind="text: election.status, class: election.statusClass"></span></p>
+
+    <h2>Vote</h2>
+    <div data-bind="visible: moreAvailable">
+        <div class="d-flex justify-content-around">
+            <button class="btn btn-primary" data-bind="text: vote.leftName, click: submitVoteLeft"></button>
+            <button class="btn btn-primary" data-bind="text: vote.rightName, click: submitVoteRight"></button>
+        </div>
+        <div class="d-flex justify-content-around">
+            <div data-bind="text: vote.leftDescription"></div>
+            <div data-bind="text: vote.rightDescription"></div>
+        </div>
+    </div>
+    <div data-bind="hidden: moreAvailable">
+        <p>No more pairs available. Thank you for your participation!</p>
+    </div>
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/knockout.js}"></script>
+<script>
+    let shareId = '[[${shareId}]]';
+    function VotingViewModel() {
+        let self = this;
+        self.election = {
+            title: ko.observable(''),
+            status: ko.observable(''),
+            statusClass: ko.observable(''),
+        };
+
+        self.vote = {
+            id: ko.observable(''),
+            leftName: ko.observable(''),
+            rightName: ko.observable(''),
+            leftDescription: ko.observable(''),
+            rightDescription: ko.observable('')
+        };
+
+        self.moreAvailable = ko.observable(true);
+
+        self.getNewVote = function() {
+            $.ajax({
+                type: "GET",
+                url: "/api/elections/" + shareId + "/pair",
+                contentType: "application/json; charset=utf-8",
+                success: function (d, status, xhr) {
+                    self.moreAvailable(xhr.status !== 204);
+                    if (self.moreAvailable()) {
+                        self.vote.id(d.voteId);
+                        self.vote.leftName(d.leftCandidate.name);
+                        self.vote.leftDescription(d.leftCandidate.description);
+                        self.vote.rightName(d.rightCandidate.name);
+                        self.vote.rightDescription(d.rightCandidate.description);
+                    }
+                }
+            });
+        };
+
+        self.submitVote = function (leftBetterThanRight) {
+            $.ajax({
+                type: "POST",
+                url: "/api/elections/vote",
+                data: JSON.stringify({
+                    voteId: self.vote.id(),
+                    leftBetterThanRight: leftBetterThanRight
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            }).fail(function (xhr, status, error) {
+                console.log(status, error, xhr);
+            }).always(function () {
+                self.getNewVote();
+            });
+        };
+
+        self.submitVoteLeft = function () {
+            self.submitVote(true);
+        };
+
+        self.submitVoteRight = function () {
+            self.submitVote(false);
+        };
+
+        $.getJSON("/api/elections/" + shareId, function (d) {
+            self.election.title(d.title);
+            self.election.status((d.closed ? 'Closed' : 'Open'));
+            self.election.statusClass((d.closed ? 'badge-danger' : 'badge-success'));
+        });
+
+        self.getNewVote();
+    }
+    ko.applyBindings(new VotingViewModel());
+</script>
+</body>
+</html>

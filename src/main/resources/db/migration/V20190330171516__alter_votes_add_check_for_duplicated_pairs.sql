@@ -1,0 +1,1 @@
+ALTER TABLE votes ADD CONSTRAINT user_pair_unique UNIQUE ("user", pair);

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <title>Hello Geekhub</title>
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Schulze</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <span sec:authorize="isAuthenticated()" th:text="${#authentication.name}" class="text-light"></span>
+            <a class="btn btn-outline-primary ml-2" href="/registration" sec:authorize="isAnonymous()">Registration</a>
+            <a class="btn btn-primary ml-2 " href="/login" sec:authorize="isAnonymous()">Login</a>
+            <a class="btn btn-outline-primary ml-2" href="/logout" sec:authorize="isAuthenticated()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="d-flex justify-content-center pt-2" sec:authorize="isAuthenticated()">
+        <a href="/elections" class="btn btn-dark" >Go to elections</a>
+    </div>
+
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <title>Registration</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>Registration</h1>
+    <form action="/registration" method="post" th:object="${user}">
+        <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+            <ul>
+                <li th:each="error : ${#fields.globalErrors()}" th:text="${error}"></li>
+            </ul>
+        </div>
+        <div class="form-group">
+            <label for="loginField">Login</label>
+            <div class="input-group" th:classappend="${#fields.hasErrors('login') ? 'is-invalid' : ''}">
+                <input th:field="*{login}" class="form-control" id="loginField"
+                       th:classappend="${#fields.hasErrors('login') ? 'is-invalid' : ''}"/>
+                <div class="invalid-feedback" th:each="error: ${#fields.errors('login')}" th:text="${error}"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="passwordField">Password</label>
+            <div class="input-group" th:classappend="${#fields.hasErrors('password') ? 'is-invalid' : ''}">
+                <input type="password" th:field="*{password}" class="form-control" id="passwordField"
+                       th:classappend="${#fields.hasErrors('password') ? 'is-invalid' : ''}">
+                <div class="invalid-feedback" th:each="error: ${#fields.errors('password')}" th:text="${error}"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="passwordConfirmField">Confirm password</label>
+            <div class="input-group" th:classappend="${#fields.hasErrors('passwordConfirm') ? 'is-invalid' : ''}">
+                <input type="password" th:field="*{passwordConfirm}" class="form-control" id="passwordConfirmField"
+                       th:classappend="${#fields.hasErrors('passwordConfirm') ? 'is-invalid' : ''}">
+                <div class="invalid-feedback" th:each="error: ${#fields.errors('passwordConfirm')}" th:text="${error}"></div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

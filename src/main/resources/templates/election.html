@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <title>Election</title>
+</head>
+<body>
+
+<div class="container">
+    <h1 data-bind="text: election.title"></h1>
+    <p>
+        <span class="h2 badge" data-bind="text: election.status, class: election.statusClass"></span>
+        <button class="btn btn-danger" type="button" data-bind="visible: election.status() === 'Open', click: closeElection">Close</button>
+        <a class="btn btn-success" data-bind="visible: election.status() === 'Closed', attr: { href: '/api/elections/' + shareId + '/summary'}">Download summary</a>
+    </p>
+    <p data-bind="text: election.description"></p>
+
+    <p><a href="#" data-bind="attr: { href: election.votingLink }">Vote</a></p>
+
+    <h2>Candidates</h2>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Score</th>
+        </tr>
+        </thead>
+        <tbody class="table-striped" data-bind="foreach: election.candidates">
+        <tr>
+            <td data-bind="text: name"></td>
+            <td data-bind="text: description"></td>
+            <td data-bind="text: score"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/knockout.js}"></script>
+<script>
+    function ElectionViewModel(shareId) {
+        var self = this;
+
+        self.shareId = shareId;
+
+        self.election = {
+            title: ko.observable(''),
+            description: ko.observable(''),
+            status: ko.observable(''),
+            statusClass: ko.observable(''),
+            candidates: ko.observableArray([]),
+            votingLink: ko.observable('#')
+        };
+
+        self.closeElection = function () {
+            $.ajax({
+                type: "DELETE",
+                url: "/api/elections/" + self.shareId,
+                contentType: "application/json; charset=utf-8",
+                success: function () {
+                    self.getElectionInfo();
+                }
+            });
+        };
+
+        self.getElectionInfo = function () {
+            $.getJSON("/api/elections/" + self.shareId, function (d) {
+                self.election.title(d.title);
+                self.election.description(d.description);
+                self.election.status((d.closed ? 'Closed' : 'Open'));
+                self.election.statusClass((d.closed ? 'badge-danger' : 'badge-success'));
+                self.election.candidates(d.candidates);
+                self.election.votingLink('/elections/' + self.shareId + '/voting');
+            });
+        };
+
+        self.getElectionInfo();
+    }
+    ko.applyBindings(new ElectionViewModel('[[${shareId}]]'));
+</script>
+</body>
+</html>

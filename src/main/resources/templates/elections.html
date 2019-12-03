@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <title>My elections</title>
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Schulze</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <span sec:authorize="isAuthenticated()" th:text="${#authentication.name}" class="text-light"></span>
+            <a class="btn btn-outline-primary ml-2" href="/registration" sec:authorize="isAnonymous()">Registration</a>
+            <a class="btn btn-primary ml-2 " href="/login" sec:authorize="isAnonymous()">Login</a>
+            <a class="btn btn-outline-primary ml-2" href="/logout" sec:authorize="isAuthenticated()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="d-flex align-items-center mt-3">
+        <div class="h1">My elections</div>
+        <div class="flex-grow-1"></div>
+        <div data-bind="text: elections.itemsTotal() + ' election(s)'" class="mr-2"></div>
+        <a href="/elections/new" class="btn btn-success float-right">New election</a>
+    </div>
+    <table class="table mb-2">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Link</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody class="table-striped" data-bind="foreach: elections.items">
+            <tr>
+                <th scope="row" data-bind="text: title"></th>
+                <td><a data-bind="text: shareId, attr: { href: link }"></a></td>
+                <td data-bind="class: statusClass, text: status"></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="mb-3 d-flex align-items-center">
+        <div class="mr-2" data-bind="text: 'Page ' + elections.page() + ' of ' + elections.pagesTotal()"></div>
+        <div data-bind="foreach: new Array(elections.pagesTotal())">
+            <button type="button" class="btn btn-dark" data-bind="text: $index()+1, click: $parent.electionsGotoPage.bind($data, $index()+1)"></button>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center mt-3">
+        <div class="h1">Participations</div>
+        <div class="flex-grow-1"></div>
+        <div data-bind="text: participations.itemsTotal() + ' election(s)'" class="mr-2"></div>
+    </div>
+    <table class="table mb-2">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Link</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody class="table-striped" data-bind="foreach: participations.items">
+        <tr>
+            <th scope="row" data-bind="text: title"></th>
+            <td><a data-bind="text: shareId, attr: { href: link }"></a></td>
+            <td data-bind="class: statusClass, text: status"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="mb-3 d-flex align-items-center">
+        <div class="mr-2" data-bind="text: 'Page ' + participations.page() + ' of ' + participations.pagesTotal()"></div>
+        <div data-bind="foreach: new Array(participations.pagesTotal())">
+            <button type="button" class="btn btn-dark" data-bind="text: $index()+1, click: $parent.participationsGotoPage.bind($data, $index()+1)"></button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/knockout.js}"></script>
+<script>
+    function ElectionsListViewModel() {
+        var self = this;
+        self.elections = {
+            page: ko.observable(1),
+            perPage: ko.observable(5),
+            itemsTotal: ko.observable(0),
+            pagesTotal: ko.observable(1),
+            items: ko.observableArray([])
+        };
+        self.participations = {
+            page: ko.observable(1),
+            perPage: ko.observable(5),
+            itemsTotal: ko.observable(0),
+            pagesTotal: ko.observable(1),
+            items: ko.observableArray([])
+        };
+
+        self.electionsGotoPage = function(page) {
+            $.getJSON("/api/elections?perPage=5&page=" + page, function (data) {
+                self.elections.page(data.page);
+                self.elections.perPage(data.perPage);
+                self.elections.itemsTotal(data.itemsTotal);
+                self.elections.pagesTotal(data.pagesTotal);
+                var el = $.map(data.items, function (d) {
+                    return {
+                        title: d.title,
+                        shareId: d.shareId,
+                        link: '/elections/' + d.shareId,
+                        status: (d.closed ? 'Closed' : 'Open'),
+                        statusClass: (d.closed ? 'table-danger' : 'table-success')
+                    }
+                });
+                self.elections.items(el);
+            });
+        };
+
+        self.participationsGotoPage = function(page) {
+            $.getJSON("/api/participations?perPage=5&page=" + page, function (data) {
+                self.participations.page(data.page);
+                self.participations.perPage(data.perPage);
+                self.participations.itemsTotal(data.itemsTotal);
+                self.participations.pagesTotal(data.pagesTotal);
+                var el = $.map(data.items, function (d) {
+                    return {
+                        title: d.title,
+                        shareId: d.shareId,
+                        link: '/elections/' + d.shareId,
+                        status: (d.closed ? 'Closed' : 'Open'),
+                        statusClass: (d.closed ? 'table-danger' : 'table-success')
+                    }
+                });
+                self.participations.items(el);
+            });
+        };
+
+        self.electionsGotoPage(1);
+        self.participationsGotoPage(1);
+    }
+    ko.applyBindings(new ElectionsListViewModel());
+</script>
+</body>
+</html>

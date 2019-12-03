@@ -1,0 +1,5 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY NOT NULL,
+  login TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL
+)
