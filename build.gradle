@@ -27,3 +27,24 @@ dependencies {
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
+
+processResources {
+    dependsOn "ngBuild"
+}
+
+def webappDir = "$projectDir/src/main/resources/frontend/geekhub-schulze"
+
+task ngBuild(type: Exec) {
+    dependsOn "ngInstall"
+    workingDir "$webappDir"
+    inputs.dir "$webappDir"
+    group = BasePlugin.BUILD_GROUP
+    commandLine "ng", "build"
+}
+
+task ngInstall(type: Exec) {
+    workingDir "$webappDir"
+    inputs.dir "$webappDir"
+    group = BasePlugin.BUILD_GROUP
+    commandLine "npm", "install"
+}
