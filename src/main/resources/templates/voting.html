@@ -54,7 +54,7 @@
         self.getNewVote = function() {
             $.ajax({
                 type: "GET",
-                url: "/api/elections/" + shareId + "/pair",
+                url: "/api/elections/" + shareId + "/vote",
                 contentType: "application/json; charset=utf-8",
                 success: function (d, status, xhr) {
                     self.moreAvailable(xhr.status !== 204);
@@ -72,7 +72,7 @@
         self.submitVote = function (leftBetterThanRight) {
             $.ajax({
                 type: "POST",
-                url: "/api/elections/vote",
+                url: "/api/elections/" + shareId + "/vote",
                 data: JSON.stringify({
                     voteId: self.vote.id(),
                     leftBetterThanRight: leftBetterThanRight

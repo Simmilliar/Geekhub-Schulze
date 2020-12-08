@@ -29,22 +29,28 @@ dependencies {
 }
 
 processResources {
-    dependsOn "ngBuild"
 }
 
 def webappDir = "$projectDir/src/main/resources/frontend/geekhub-schulze"
 
 task ngBuild(type: Exec) {
-    dependsOn "ngInstall"
     workingDir "$webappDir"
     inputs.dir "$webappDir"
     group = BasePlugin.BUILD_GROUP
-    commandLine "ng", "build"
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine "ng.cmd", "build"
+    } else {
+        commandLine "ng", "build"
+    }
 }
 
-task ngInstall(type: Exec) {
+task npmInstall(type: Exec) {
     workingDir "$webappDir"
     inputs.dir "$webappDir"
     group = BasePlugin.BUILD_GROUP
-    commandLine "npm", "install"
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine "npm.cmd", "install"
+    } else {
+        commandLine "npm", "install"
+    }
 }
