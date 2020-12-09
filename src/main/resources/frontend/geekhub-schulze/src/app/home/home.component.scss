@@ -36,7 +36,7 @@
 
 @media (max-width: 767px) {
   .cards li {
-    flex-basis: auto;
+    flex-basis: 100%;
   }
   .cards li:nth-child(n+2) {
     margin-top: 12px;
@@ -69,3 +69,22 @@ section:nth-child(n+1) {
   margin-top: 1.5rem;
 }
 
+.btn-add-election {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0.75rem;
+  svg {
+    width: 48px;
+  }
+  span {
+    color: #777;
+  }
+}
+
+.btn-add-election:hover {
+  background-color: #eee;
+  text-decoration: none;
+}
