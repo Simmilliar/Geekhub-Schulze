@@ -1,0 +1,94 @@
+.election-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.badge-normal {
+  font-weight: normal;
+  font-size: 1rem;
+}
+
+.inline-svg {
+  height: 1rem;
+}
+
+.election-description {
+  text-align: justify;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.font-mono {
+  font-family: "JetBrains Mono", sans-serif;
+}
+
+.btn-vote-wrapper {
+  text-align: center;
+}
+
+h2 {
+  margin-top: 1rem;
+}
+
+.cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.cards li {
+  flex: 0 1 auto;
+}
+
+.card-candidate {
+  border-radius: calc(.25rem - 1px);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 5px 5px 0 rgba(0,0,0,0.4);
+}
+
+@media (max-width: 767px) {
+  .btn-vote {
+    width: 100%;
+  }
+  .cards li {
+    flex-basis: 100%;
+  }
+  .cards li:nth-child(n+2) {
+    margin-top: 12px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .btn-vote {
+    width: calc(50% - 6px);
+  }
+  .cards li {
+    flex-basis: calc(50% - 6px);
+  }
+  .cards li:nth-child(n+3) {
+    margin-top: 12px;
+  }
+}
+
+@media (min-width: 992px) {
+  .btn-vote {
+    width: calc(33.333% - 8px);
+  }
+  .cards li {
+    flex-basis: calc(33.333% - 8px);
+  }
+  .cards li:nth-child(n+4) {
+    margin-top: 12px;
+  }
+}
