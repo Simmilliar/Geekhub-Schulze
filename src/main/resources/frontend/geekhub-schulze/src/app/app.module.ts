@@ -11,9 +11,7 @@ import { NewElectionComponent } from './new-election/new-election.component';
 import { VotingComponent } from './voting/voting.component';
 
 const routes: Routes = [{
-  path: '', pathMatch: 'full', redirectTo: 'home'
-}, {
-  path: 'home', component: HomeComponent
+  path: '', pathMatch: 'full', component: HomeComponent
 }, {
   path: 'login', component: LoginComponent
 }, {
@@ -24,6 +22,8 @@ const routes: Routes = [{
   path: 'election/new', component: NewElectionComponent
 }, {
   path: 'election/voting', component: VotingComponent
+}, {
+  path: '**', redirectTo: ''
 }]
 
 @NgModule({

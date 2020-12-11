@@ -16,21 +16,21 @@ import javax.validation.Valid;
 @Controller
 public class RegistrationController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public RegistrationController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/registration")
+    @GetMapping("/api/registration")
     public String registrationPage(Model model) {
         RegistrationForm registrationForm = new RegistrationForm();
         model.addAttribute("user", registrationForm);
         return "registration";
     }
 
-    @PostMapping("/registration")
+    @PostMapping("/api/registration")
     public ModelAndView registerUser(@ModelAttribute("user") @Valid RegistrationForm registrationForm,
                                      BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {

@@ -15,8 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private UserAuthDetailsService userAuthDetailsService;
-    private RedirectAccessDeniedHandler redirectAccessDeniedHandler;
+    private final UserAuthDetailsService userAuthDetailsService;
+    private final RedirectAccessDeniedHandler redirectAccessDeniedHandler;
 
     @Autowired
     public SecurityConfiguration(UserAuthDetailsService userAuthDetailsService,
@@ -45,7 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/js/**", "/css/**");
+        web.ignoring().antMatchers("/*.js", "/*.css");
     }
 
     @Override
@@ -54,9 +54,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .csrf()
                 .disable()
             .authorizeRequests()
-                .antMatchers("/", "/*.js", "/*.css", "/home").permitAll()
-                .antMatchers("/registration", "/login").anonymous()
-                .anyRequest().authenticated()
+                .antMatchers("/api/registration", "/api/login").anonymous()
+                .antMatchers("/api/**").authenticated()
+                .anyRequest().denyAll()
                 .and()
             .exceptionHandling()
                 .accessDeniedHandler(redirectAccessDeniedHandler)
