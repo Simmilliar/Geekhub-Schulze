@@ -29,11 +29,13 @@ dependencies {
 }
 
 processResources {
+    dependsOn("ngBuild")
 }
 
 def webappDir = "$projectDir/src/main/resources/frontend/geekhub-schulze"
 
 task ngBuild(type: Exec) {
+    dependsOn("npmInstall")
     workingDir "$webappDir"
     inputs.dir "$webappDir"
     group = BasePlugin.BUILD_GROUP

@@ -9,8 +9,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -54,9 +63,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .csrf()
                 .disable()
             .authorizeRequests()
-                .antMatchers("/api/registration", "/api/login").anonymous()
-                .antMatchers("/api/**").authenticated()
-                .anyRequest().denyAll()
+                .antMatchers("/registration", "/api/registration", "/login", "/api/login").anonymous()
+                .anyRequest().authenticated()
                 .and()
             .exceptionHandling()
                 .accessDeniedHandler(redirectAccessDeniedHandler)
@@ -64,12 +72,30 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .failureUrl("/login")
-                .defaultSuccessUrl("/")
+                .successHandler(successHandler())
+                .failureHandler(failureHandler())
                 .and()
             .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
                 .deleteCookies("JSESSIONID");
+    }
+
+    private AuthenticationSuccessHandler successHandler() {
+        return (request, response, authentication) -> {
+            response.getWriter().append("{ \"status\": \"OK\" }");
+            response.setStatus(200);
+        };
+    }
+
+    private AuthenticationFailureHandler failureHandler() {
+        return (request, response, exception) -> {
+            exception.printStackTrace();
+            response.getWriter()
+                    .append("{ \"status\": \"UNAUTHORIZED\", \"message\": \"")
+                    .append(exception.getLocalizedMessage())
+                    .append("\" }");
+            response.setStatus(401);
+        };
     }
 }
