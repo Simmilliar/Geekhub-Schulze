@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { ElectionComponent } from './election/election.component';
 import { NewElectionComponent } from './new-election/new-election.component';
+import { VotingComponent } from './voting/voting.component';
 
 const routes: Routes = [{
   path: '', pathMatch: 'full', redirectTo: 'home'
@@ -21,6 +22,8 @@ const routes: Routes = [{
   path: 'election', component: ElectionComponent
 }, {
   path: 'election/new', component: NewElectionComponent
+}, {
+  path: 'election/voting', component: VotingComponent
 }]
 
 @NgModule({
@@ -30,7 +33,8 @@ const routes: Routes = [{
     HomeComponent,
     RegistrationComponent,
     ElectionComponent,
-    NewElectionComponent
+    NewElectionComponent,
+    VotingComponent
   ],
   imports: [
     BrowserModule,
