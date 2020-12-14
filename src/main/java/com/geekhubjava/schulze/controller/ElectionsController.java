@@ -14,7 +14,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,9 +27,9 @@ import java.util.stream.Collectors;
 @RestController
 public class ElectionsController {
 
-    private ElectionService electionService;
-    private CalculationService calculationService;
-    private XLSExportingService xlsExportingService;
+    private final ElectionService electionService;
+    private final CalculationService calculationService;
+    private final XLSExportingService xlsExportingService;
 
     @Autowired
     public ElectionsController(ElectionService electionService, CalculationService calculationService,

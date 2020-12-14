@@ -1,17 +1,15 @@
 <div class="card-login">
   <h1>Login</h1>
-  <div class="alert alert-danger" role="alert">
-    Example error.
-  </div>
-  <form name="f" action="/login" method="post">
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{errorMessage}}</div>
+  <form (submit)="login()">
     <div class="form-group">
       <label for="loginField">Login</label>
-      <input type="text" name="username" class="form-control" id="loginField" required>
+      <input type="text" name="username" class="form-control" id="loginField" required [(ngModel)]="username">
     </div>
     <div class="form-group">
       <label for="passwordField">Password</label>
-      <input type="password" name="password" class="form-control" id="passwordField" required>
+      <input type="password" name="password" class="form-control" id="passwordField" required [(ngModel)]="password">
     </div>
-    <button type="submit" class="btn btn-primary" name="submit" value="submit">Login</button>
+    <button class="btn btn-primary" type="submit">Login</button>
   </form>
 </div>
