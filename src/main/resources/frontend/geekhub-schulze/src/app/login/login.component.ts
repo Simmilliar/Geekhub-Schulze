@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {UserService} from '../user.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginComponent implements OnInit {
   username: string = '';
   password: string = '';
 
-  constructor(private http: HttpClient, private route: Router) { }
+  constructor(private http: HttpClient, private route: Router, private userService: UserService) { }
 
   ngOnInit(): void {
   }
@@ -24,9 +25,10 @@ export class LoginComponent implements OnInit {
     formData.append('password', this.password)
     this.errorMessage = ''
     this.http.post<any>('/api/login', formData).subscribe(
-      (res) => {
+      async (res) => {
         if (res.status === 'OK') {
-          this.route.navigate(['/'])
+          this.userService.setUser({ name: 'John Doe' })
+          await this.route.navigate(['/login'])
         }
       },
       (err) => {
