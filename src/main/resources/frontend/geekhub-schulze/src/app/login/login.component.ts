@@ -19,21 +19,23 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  login(): void {
+  async login(): Promise<void> {
     const formData = new FormData()
     formData.append('username', this.username)
     formData.append('password', this.password)
     this.errorMessage = ''
-    this.http.post<any>('/api/login', formData).subscribe(
-      async (res) => {
-        if (res.status === 'OK') {
-          this.userService.setUser({ name: 'John Doe' })
-          await this.route.navigate(['/login'])
-        }
-      },
-      (err) => {
-        this.errorMessage = err.error.message
+    try {
+      const loginResponse = await this.http.post<any>('/api/login', formData).toPromise()
+      if (loginResponse.status === 'OK') {
+        this.userService.setUser(await this.http.get<any>('/api/users/me').toPromise())
+        await this.route.navigate(['/'])
       }
-    )
+    } catch (err) {
+      if (err.error.message) {
+        this.errorMessage = err.error.message
+      } else {
+        this.errorMessage = 'Login error'
+      }
+    }
   }
 }

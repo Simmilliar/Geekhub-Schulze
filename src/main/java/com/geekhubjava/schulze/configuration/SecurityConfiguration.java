@@ -4,6 +4,7 @@ import com.geekhubjava.schulze.service.UserAuthDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,19 +15,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserAuthDetailsService userAuthDetailsService;
-    private final RedirectAccessDeniedHandler redirectAccessDeniedHandler;
 
     @Autowired
-    public SecurityConfiguration(UserAuthDetailsService userAuthDetailsService,
-                                 RedirectAccessDeniedHandler redirectAccessDeniedHandler) {
+    public SecurityConfiguration(UserAuthDetailsService userAuthDetailsService) {
         this.userAuthDetailsService = userAuthDetailsService;
-        this.redirectAccessDeniedHandler = redirectAccessDeniedHandler;
     }
 
     @Bean
@@ -62,7 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
             .exceptionHandling()
-                .accessDeniedHandler(redirectAccessDeniedHandler)
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
             .formLogin()
                 .loginPage("/login")
@@ -71,26 +71,35 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .failureHandler(failureHandler())
                 .and()
             .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
+                .logoutUrl("/api/logout")
+                .logoutSuccessHandler(logoutSuccessHandler())
                 .deleteCookies("JSESSIONID");
     }
 
     private AuthenticationSuccessHandler successHandler() {
         return (request, response, authentication) -> {
             response.getWriter().append("{ \"status\": \"OK\" }");
+            response.setHeader("Content-Type", "application/json;charset=UTF-8");
             response.setStatus(200);
         };
     }
 
     private AuthenticationFailureHandler failureHandler() {
         return (request, response, exception) -> {
-            exception.printStackTrace();
             response.getWriter()
                     .append("{ \"status\": \"UNAUTHORIZED\", \"message\": \"")
                     .append(exception.getLocalizedMessage())
                     .append("\" }");
+            response.setHeader("Content-Type", "application/json;charset=UTF-8");
             response.setStatus(401);
+        };
+    }
+
+    private LogoutSuccessHandler logoutSuccessHandler() {
+        return (request, response, authentication) -> {
+            response.getWriter().append("{ \"status\": \"OK\" }");
+            response.setHeader("Content-Type", "application/json;charset=UTF-8");
+            response.setStatus(200);
         };
     }
 }

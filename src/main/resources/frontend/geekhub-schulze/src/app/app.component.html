@@ -9,19 +9,19 @@
     <ul class="navbar-nav mr-auto">
     </ul>
     <ul class="navbar-nav">
-      <li *ngIf="userService.getUser().name" class="nav-item">
-        <span class="navbar-text mr-2">{{userService.getUser().name}}</span>
+      <li *ngIf="userService.getUser()?.name" class="nav-item">
+        <span class="navbar-text mr-2">{{userService.getUser()?.name}}</span>
       </li>
-      <li *ngIf="userService.getUser().name">
+      <li *ngIf="userService.getUser()?.name">
         <div class="nav-separator mr-2 mx-sm-2 my-2 my-sm-0"></div>
       </li>
-      <li *ngIf="userService.getUser().name === ''" class="nav-item">
+      <li *ngIf="userService.getUser()?.name === null" class="nav-item">
         <a class="nav-link" routerLink="/login">Login</a>
       </li>
-      <li *ngIf="userService.getUser().name === ''" class="nav-item">
+      <li *ngIf="userService.getUser()?.name === null" class="nav-item">
         <a class="nav-link" routerLink="/registration">Register</a>
       </li>
-      <li *ngIf="userService.getUser().name" class="nav-item">
+      <li *ngIf="userService.getUser()?.name" class="nav-item">
         <a class="nav-link" (click)="logout()">Logout</a>
       </li>
     </ul>

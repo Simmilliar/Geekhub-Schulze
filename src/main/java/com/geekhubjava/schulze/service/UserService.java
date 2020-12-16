@@ -11,8 +11,8 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -32,5 +32,9 @@ public class UserService {
 
     public Optional<User> getUserByLogin(String login) {
         return userRepository.getUserByLogin(login);
+    }
+
+    public Optional<User> getUserById(long id) {
+        return userRepository.getUserById(id);
     }
 }

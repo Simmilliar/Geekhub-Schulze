@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,6 +44,22 @@ public class UserRepository {
         int count = Objects.requireNonNull(namedParameterJdbcTemplate.queryForObject(
                 isLoginExistsSql, namedParameters, Integer.TYPE));
         return count > 0;
+    }
+
+    public Optional<User> getUserById(long id) {
+        String selectUserByIdSql = "SELECT id, login, password_hash FROM users WHERE id = :id";
+
+        SqlParameterSource namedParameters = new MapSqlParameterSource()
+                .addValue("id", id);
+        List<User> users = namedParameterJdbcTemplate.query(selectUserByIdSql, namedParameters,
+                (rs, rowNum) -> new User(rs.getInt("id"), rs.getString("login"),
+                        rs.getString("password_hash"))
+        );
+        if (users.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(users.get(0));
+        }
     }
 
     public Optional<User> getUserByLogin(String login) {

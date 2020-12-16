@@ -5,21 +5,17 @@ import { Injectable } from '@angular/core';
 })
 export class UserService {
 
-  private user: { name: string }
-
-  constructor() {
-    this.setUser({ name: '' })
-  }
+  constructor() {}
 
   getUser() {
-    return this.user
+    return JSON.parse(localStorage.getItem('user'))
   }
 
   setUser(user: { name: string }) {
-    this.user = user
+    localStorage.setItem('user', JSON.stringify(user))
   }
 
   resetUser() {
-    this.user = { name: '' }
+    localStorage.removeItem('user')
   }
 }

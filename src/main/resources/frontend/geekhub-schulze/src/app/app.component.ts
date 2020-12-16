@@ -15,13 +15,11 @@ export class AppComponent {
   constructor(public userService: UserService, private http: HttpClient, private route: Router) {
   }
 
-  logout() {
-    this.http.post<any>('/api/logout', {}).subscribe(
-      async () => {
-        this.userService.resetUser()
-        await this.route.navigate(['/login'])
-      },
-      (err) => {}
-    )
+  async logout() {
+    try {
+      await this.http.post<any>('/api/logout', {}).toPromise()
+      this.userService.resetUser()
+      await this.route.navigate(['/login'])
+    } catch (err) {}
   }
 }
