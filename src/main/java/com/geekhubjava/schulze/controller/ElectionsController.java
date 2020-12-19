@@ -2,6 +2,7 @@ package com.geekhubjava.schulze.controller;
 
 import com.geekhubjava.schulze.model.Candidate;
 import com.geekhubjava.schulze.model.Election;
+import com.geekhubjava.schulze.model.User;
 import com.geekhubjava.schulze.model.UserAuthDetails;
 import com.geekhubjava.schulze.model.form.NewElectionForm;
 import com.geekhubjava.schulze.model.form.NewElectionFormCandidate;
@@ -9,6 +10,7 @@ import com.geekhubjava.schulze.model.response.ElectionInfo;
 import com.geekhubjava.schulze.model.response.Page;
 import com.geekhubjava.schulze.service.CalculationService;
 import com.geekhubjava.schulze.service.ElectionService;
+import com.geekhubjava.schulze.service.UserService;
 import com.geekhubjava.schulze.service.XLSExportingService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +30,15 @@ import java.util.stream.Collectors;
 public class ElectionsController {
 
     private final ElectionService electionService;
+    private final UserService userService;
     private final CalculationService calculationService;
     private final XLSExportingService xlsExportingService;
 
     @Autowired
-    public ElectionsController(ElectionService electionService, CalculationService calculationService,
-                               XLSExportingService xlsExportingService) {
+    public ElectionsController(ElectionService electionService, UserService userService,
+                               CalculationService calculationService, XLSExportingService xlsExportingService) {
         this.electionService = electionService;
+        this.userService = userService;
         this.calculationService = calculationService;
         this.xlsExportingService = xlsExportingService;
     }
@@ -45,7 +49,8 @@ public class ElectionsController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "No election with id " + shareId + " were found."));
         List<Candidate> candidates = calculationService.getSortedCandidates(election.getId());
-        return new ElectionInfo(election, candidates);
+        User author = userService.getUserById(election.getAuthorId()).get();
+        return new ElectionInfo(election, author, candidates);
     }
 
     @GetMapping("/api/elections")

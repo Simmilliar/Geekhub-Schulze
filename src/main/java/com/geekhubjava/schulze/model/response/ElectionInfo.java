@@ -2,12 +2,14 @@ package com.geekhubjava.schulze.model.response;
 
 import com.geekhubjava.schulze.model.Candidate;
 import com.geekhubjava.schulze.model.Election;
+import com.geekhubjava.schulze.model.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ElectionInfo {
 
+    private String author;
     private String shareId;
     private String title;
     private String description;
@@ -22,7 +24,8 @@ public class ElectionInfo {
         this.candidates = null;
     }
 
-    public ElectionInfo(Election election, List<Candidate> candidates) {
+    public ElectionInfo(Election election, User author, List<Candidate> candidates) {
+        this.author = author.getLogin();
         this.shareId = election.getShareId();
         this.title = election.getTitle();
         this.description = election.getDescription();
@@ -70,5 +73,13 @@ public class ElectionInfo {
 
     public void setCandidates(List<CandidateInfo> candidates) {
         this.candidates = candidates;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }

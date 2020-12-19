@@ -19,11 +19,11 @@ const routes: Routes = [{
 }, {
   path: 'registration', component: RegistrationComponent
 }, {
-  path: 'election', component: ElectionComponent
+  path: 'elections/new', component: NewElectionComponent
 }, {
-  path: 'election/new', component: NewElectionComponent
+  path: 'elections/:shareId', component: ElectionComponent
 }, {
-  path: 'election/voting', component: VotingComponent
+  path: 'elections/:shareId/voting', component: VotingComponent
 }, {
   path: '**', redirectTo: ''
 }]
