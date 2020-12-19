@@ -103,6 +103,9 @@ h2 {
   align-items: center;
   height: 100%;
   padding: 0.75rem;
+  border: none;
+  background-color: transparent;
+  outline: none !important;
   svg {
     width: 48px;
   }

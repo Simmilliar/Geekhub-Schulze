@@ -18,8 +18,8 @@ import javax.validation.Valid;
 @RestController
 public class VotingController {
 
-    private VotingService votingService;
-    private ElectionRepository electionRepository;
+    private final VotingService votingService;
+    private final ElectionRepository electionRepository;
 
     @Autowired
     public VotingController(VotingService votingService, ElectionRepository electionRepository) {

@@ -1,24 +1,30 @@
-<h1>{{election.title}}</h1>
+<h1>{{election?.title}}</h1>
 <div class="election-controls">
   <span class="badge badge-normal font-mono"
-        [class.badge-success]="!election.closed"
-        [class.badge-danger]="election.closed">
-    {{election.closed ? 'CLOSED' : 'OPEN'}}
+        [class.badge-success]="!election?.closed"
+        [class.badge-danger]="election?.closed">
+    {{election?.closed ? 'CLOSED' : 'OPEN'}}
+  </span>
+  <span class="badge badge-secondary badge-normal ml-2">
+    <svg class="inline-svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+    </svg>
+    {{election?.author}}
   </span>
   <span class="spacer"></span>
   <button class="btn btn-danger" type="button"
-          *ngIf="!election.closed && election.author === userService.getUser()">Close</button>
+          *ngIf="!election?.closed && election?.author === userService.getUser()">Close</button>
 </div>
 
-<p class="election-description">{{election.description}}</p>
+<p class="election-description">{{election?.description}}</p>
 
-<div class="btn-vote-wrapper" *ngIf="!election.closed">
-  <a [routerLink]="['elections/' + election.shareId + '/voting']" class="btn btn-primary font-mono btn-vote">VOTE</a>
+<div class="btn-vote-wrapper" *ngIf="!election?.closed">
+  <a [routerLink]="['/elections/' + election?.shareId + '/voting']" class="btn btn-primary font-mono btn-vote">VOTE</a>
 </div>
 
 <h2>Candidates</h2>
 <ul class="cards">
-  <li *ngFor="let candidate of election.candidates; let i = index">
+  <li *ngFor="let candidate of election?.candidates; let i = index">
     <div class="card-candidate">
       <img class="card-img-top" src="/assets/waves.svg" alt="Election">
       <div class="card-body">

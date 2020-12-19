@@ -19,7 +19,6 @@ export class ElectionComponent implements OnInit {
     try {
       const electionShareId = this.route.snapshot.paramMap.get('shareId')
       this.election = await this.http.get<any>('/api/elections/' + electionShareId).toPromise()
-      console.log(this.election)
     } catch (err) {
       if (err.status === 401) {
         this.userService.resetUser()
@@ -27,5 +26,4 @@ export class ElectionComponent implements OnInit {
       }
     }
   }
-
 }
