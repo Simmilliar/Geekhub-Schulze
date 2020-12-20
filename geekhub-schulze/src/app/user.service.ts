@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {UserModel} from "./_models/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -7,15 +8,15 @@ export class UserService {
 
   constructor() {}
 
-  getUser() {
+  getUser(): UserModel {
     return JSON.parse(localStorage.getItem('user'))
   }
 
-  setUser(user: { name: string }) {
+  setUser(user: UserModel): void {
     localStorage.setItem('user', JSON.stringify(user))
   }
 
-  resetUser() {
+  resetUser(): void {
     localStorage.removeItem('user')
   }
 }

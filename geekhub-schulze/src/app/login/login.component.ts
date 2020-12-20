@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {UserService} from '../user.service';
+import {UserModel} from "../_models/user.model";
 
 @Component({
   selector: 'app-login',
@@ -27,11 +28,12 @@ export class LoginComponent implements OnInit {
     try {
       const loginResponse = await this.http.post<any>('/api/login', formData).toPromise()
       if (loginResponse.status === 'OK') {
-        this.userService.setUser(await this.http.get<any>('/api/users/me').toPromise())
+        const user = await this.http.get<UserModel>('/api/users/me').toPromise()
+        this.userService.setUser(user)
         await this.route.navigate(['/'])
       }
     } catch (err) {
-      if (err.error.message) {
+      if (err.error?.message) {
         this.errorMessage = err.error.message
       } else {
         this.errorMessage = 'Login error'

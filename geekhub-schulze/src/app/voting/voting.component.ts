@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from "../user.service";
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ElectionModel} from "../_models/election.model";
+import {VoteToSubmitModel} from "../_models/vote-to-submit.model";
 
 @Component({
   selector: 'app-voting',
@@ -11,8 +13,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class VotingComponent implements OnInit {
 
   electionShareId: string
-  election: any
-  candidates: any
+  election: ElectionModel
+  candidates: VoteToSubmitModel
   pairsAvailable: boolean = false
 
   constructor(public userService: UserService, private http: HttpClient,
@@ -21,8 +23,8 @@ export class VotingComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     try {
       this.electionShareId = this.route.snapshot.paramMap.get('shareId')
-      this.election = await this.http.get<any>('/api/elections/' + this.electionShareId).toPromise()
-      this.candidates = await this.http.get<any>('/api/elections/' + this.electionShareId + '/vote').toPromise()
+      this.election = await this.http.get<ElectionModel>('/api/elections/' + this.electionShareId).toPromise()
+      this.candidates = await this.http.get<VoteToSubmitModel>('/api/elections/' + this.electionShareId + '/vote').toPromise()
     } catch (err) {
       if (err.status === 401) {
         this.userService.resetUser()
@@ -37,14 +39,7 @@ export class VotingComponent implements OnInit {
         voteId: this.candidates.voteId,
         leftBetterThanRight
       }).toPromise()
-      const newPair = await this.http.get<any>('/api/elections/' + this.electionShareId + '/vote').toPromise()
-      console.log(newPair)
-      this.candidates = newPair
-    } catch (err) {
-      if (err.status === 401) {
-        this.userService.resetUser()
-        await this.router.navigate(['/login'])
-      }
-    }
+      this.candidates = await this.http.get<VoteToSubmitModel>('/api/elections/' + this.electionShareId + '/vote').toPromise()
+    } catch (err) {}
   }
 }

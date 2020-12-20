@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {UserService} from "../user.service";
-import {Router} from "@angular/router";
+import {ElectionModel} from "../_models/election.model";
+import {Page} from "../_models/page.model";
 
 @Component({
   selector: 'app-home',
@@ -10,22 +11,17 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent implements OnInit {
 
-  elections: any[] = []
-  participations: any[] = []
+  elections: ElectionModel[] = []
+  participations: ElectionModel[] = []
 
-  constructor(public userService: UserService, private http: HttpClient, private route: Router) { }
+  constructor(public userService: UserService, private http: HttpClient) { }
 
   async ngOnInit(): Promise<void> {
     try {
-      const elections = await this.http.get<any>('/api/elections').toPromise()
+      const elections = await this.http.get<Page<ElectionModel>>('/api/elections').toPromise()
       this.elections = elections.items
-      const participations = await this.http.get<any>('/api/participations').toPromise()
+      const participations = await this.http.get<Page<ElectionModel>>('/api/participations').toPromise()
       this.participations = participations.items
-    } catch (err) {
-      if (err.status === 401) {
-        this.userService.resetUser()
-        await this.route.navigate(['/login'])
-      }
-    }
+    } catch (err) {}
   }
 }

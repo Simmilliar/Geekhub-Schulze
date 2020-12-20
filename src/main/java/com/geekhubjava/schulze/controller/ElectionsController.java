@@ -49,7 +49,9 @@ public class ElectionsController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "No election with id " + shareId + " were found."));
         List<Candidate> candidates = calculationService.getSortedCandidates(election.getId());
-        User author = userService.getUserById(election.getAuthorId()).get();
+        User author = userService.getUserById(election.getAuthorId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Unable to retrieve election author."));
         return new ElectionInfo(election, author, candidates);
     }
 

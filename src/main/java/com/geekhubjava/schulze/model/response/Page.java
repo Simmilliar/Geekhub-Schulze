@@ -53,4 +53,8 @@ public class Page<T> {
     public int getItemsTotal() {
         return itemsTotal;
     }
+
+    public void setItemsTotal(int itemsTotal) {
+        this.itemsTotal = itemsTotal;
+    }
 }

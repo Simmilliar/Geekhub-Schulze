@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {UserService} from "../user.service";
 import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {NewElectionForm} from "./new-election.form";
+import {ElectionModel} from "../_models/election.model";
 
 @Component({
   selector: 'app-new-election',
@@ -14,8 +15,7 @@ export class NewElectionComponent implements OnInit {
   election: NewElectionForm
   errorMessage: string
 
-  constructor(public userService: UserService, private http: HttpClient,
-              private router: Router, private route: ActivatedRoute) {
+  constructor(public userService: UserService, private http: HttpClient, private router: Router) {
     this.election = {
       title: '',
       description: '',
@@ -34,18 +34,17 @@ export class NewElectionComponent implements OnInit {
   async save(): Promise<void> {
     this.errorMessage = ''
     try {
-      const newElection = await this.http.post<any>('/api/elections/', this.election).toPromise()
+      const newElection = await this.http.post<ElectionModel>('/api/elections/', this.election).toPromise()
       await this.router.navigate(['/elections/' + newElection.shareId])
     } catch (err) {
-      if (err.status === 401) {
-        this.userService.resetUser()
-        await this.router.navigate(['/login'])
-      } else if (err.status === 400) {
-        this.errorMessage = err.error.errors.map(error => {
+      if (err.status === 400) {
+        this.errorMessage = err.error?.errors?.map(error => {
           return error.field + ': ' + error.defaultMessage
-        }).join('\n')
+        })?.join('\n') || 'Unknown error'
       } else if (err.status === 409) {
-        this.errorMessage = err.error.message
+        this.errorMessage = err.error?.message || 'Unknown error'
+      } else {
+        this.errorMessage = 'Unknown error'
       }
     }
   }
