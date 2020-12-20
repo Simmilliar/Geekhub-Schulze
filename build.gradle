@@ -26,10 +26,10 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
 }
 
 processResources {
-    exclude 'frontend'
 //    dependsOn("ngBuild")
 }
 

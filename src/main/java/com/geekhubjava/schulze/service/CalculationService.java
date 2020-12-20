@@ -17,8 +17,8 @@ import java.util.Map;
 @Service
 public class CalculationService {
 
-    private VotingRepository votingRepository;
-    private CandidatesRepository candidatesRepository;
+    private final VotingRepository votingRepository;
+    private final CandidatesRepository candidatesRepository;
 
     @Autowired
     public CalculationService(VotingRepository votingRepository, CandidatesRepository candidatesRepository) {
