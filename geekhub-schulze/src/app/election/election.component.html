@@ -12,8 +12,8 @@
     {{election?.author}}
   </span>
   <span class="spacer"></span>
-  <button class="btn btn-danger" type="button"
-          *ngIf="!election?.closed && election?.author === userService.getUser()">Close</button>
+  <button class="btn btn-danger" type="button" (click)="close()"
+          *ngIf="!election?.closed && election?.author === userService.getUser()?.name">Close</button>
 </div>
 
 <p class="election-description">{{election?.description}}</p>

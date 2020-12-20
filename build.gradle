@@ -33,7 +33,7 @@ processResources {
 //    dependsOn("ngBuild")
 }
 
-def webappDir = "$projectDir/src/main/resources/frontend/geekhub-schulze"
+def webappDir = "$projectDir/geekhub-schulze"
 
 task ngBuild(type: Exec) {
     dependsOn("npmInstall")

@@ -10,6 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class ElectionComponent implements OnInit {
 
+  electionShareId: string
   election: any
 
   constructor(public userService: UserService, private http: HttpClient,
@@ -17,8 +18,20 @@ export class ElectionComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      const electionShareId = this.route.snapshot.paramMap.get('shareId')
-      this.election = await this.http.get<any>('/api/elections/' + electionShareId).toPromise()
+      this.electionShareId = this.route.snapshot.paramMap.get('shareId')
+      this.election = await this.http.get<any>('/api/elections/' + this.electionShareId).toPromise()
+    } catch (err) {
+      if (err.status === 401) {
+        this.userService.resetUser()
+        await this.router.navigate(['/login'])
+      }
+    }
+  }
+
+  async close(): Promise<void> {
+    try {
+      this.election = await this.http.delete<any>('/api/elections/' + this.electionShareId).toPromise()
+      await this.router.navigate(['/elections'])
     } catch (err) {
       if (err.status === 401) {
         this.userService.resetUser()
