@@ -12,6 +12,11 @@ public class SubmitVoteForm {
     @NotNull
     private boolean leftBetterThanRight;
 
+    public SubmitVoteForm(@NotNull @NotEmpty String voteId, @NotNull boolean leftBetterThanRight) {
+        this.voteId = voteId;
+        this.leftBetterThanRight = leftBetterThanRight;
+    }
+
     public String getVoteId() {
         return voteId;
     }

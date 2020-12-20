@@ -45,4 +45,14 @@ public class Vote {
     public void setPair(Pair pair) {
         this.pair = pair;
     }
+
+    @Override
+    public String toString() {
+        return "Vote{" +
+                "id='" + id + '\'' +
+                ", userId=" + userId +
+                ", pair=" + pair +
+                ", voteResult=" + voteResult +
+                '}';
+    }
 }

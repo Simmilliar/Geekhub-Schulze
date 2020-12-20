@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public class VotingRepository {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     // TODO: Maybe would be better to DI this.
     private final RowMapper<Pair> pairRowMapper =
@@ -59,7 +59,7 @@ public class VotingRepository {
                 "   JOIN candidates cr ON cr.id = p.right_candidate " +
                 "WHERE p.election = :electionId AND p.id NOT IN (SELECT pair FROM votes WHERE \"user\" = :userId) " +
                 "GROUP BY p.id, cl.id, cr.id " +
-                "ORDER BY COUNT(v.id) ASC LIMIT 1";
+                "ORDER BY COUNT(v.id) LIMIT 1";
 
         SqlParameterSource namedParameters = new MapSqlParameterSource()
                 .addValue("electionId", electionId)
@@ -151,49 +151,39 @@ public class VotingRepository {
     public List<Vote> getMissingVotesForCase(long betterCandidateId, long worseCandidateId, long userId) {
         final String getMissingVotesForCaseSql =
                 "WITH wtwc AS ( " +
-                "	SELECT p.left_candidate AS wtwcid " +
-                "	FROM votes v " +
-                "		JOIN pairs p ON v.pair = p.id " +
-                "	WHERE v.\"user\" = :userId " +
-                "		AND p.right_candidate = :worseCandidate " +
-                "		AND v.vote_result = 'RIGHT_IS_BETTER' " +
-                "	UNION " +
-                "	SELECT p.right_candidate AS wtwcid " +
-                "	FROM votes v " +
-                "		JOIN pairs p ON v.pair = p.id " +
-                "	WHERE v.\"user\" = :userId " +
-                "		AND p.left_candidate = :worseCandidate " +
-                "		AND v.vote_result = 'LEFT_IS_BETTER' " +
+                "    SELECT p.left_candidate AS wtwcid " +
+                "    FROM votes v JOIN pairs p ON v.pair = p.id " +
+                "    WHERE v.\"user\" = :userId " +
+                "      AND p.right_candidate = :worseCandidate " +
+                "      AND v.vote_result = 'RIGHT_IS_BETTER' " +
+                "    UNION " +
+                "    SELECT p.right_candidate AS wtwcid " +
+                "    FROM votes v JOIN pairs p ON v.pair = p.id " +
+                "    WHERE v.\"user\" = :userId " +
+                "      AND p.left_candidate = :worseCandidate " +
+                "      AND v.vote_result = 'LEFT_IS_BETTER' " +
                 "), btbc AS ( " +
-                "	SELECT p.left_candidate AS btbcid " +
-                "	FROM votes v " +
-                "		JOIN pairs p ON v.pair = p.id " +
-                "	WHERE v.\"user\" = :userId " +
-                "		AND p.right_candidate = :betterCandidate " +
-                "		AND v.vote_result = 'LEFT_IS_BETTER' " +
-                "	UNION " +
-                "	SELECT p.right_candidate AS btbcid " +
-                "	FROM votes v " +
-                "		JOIN pairs p ON v.pair = p.id " +
-                "	WHERE v.\"user\" = :userId " +
-                "		AND p.left_candidate = :betterCandidate " +
-                "		AND v.vote_result = 'RIGHT_IS_BETTER' " +
+                "    SELECT p.left_candidate AS btbcid " +
+                "    FROM votes v JOIN pairs p ON v.pair = p.id " +
+                "    WHERE v.\"user\" = :userId " +
+                "      AND p.right_candidate = :betterCandidate " +
+                "      AND v.vote_result = 'LEFT_IS_BETTER' " +
+                "    UNION " +
+                "    SELECT p.right_candidate AS btbcid " +
+                "    FROM votes v JOIN pairs p ON v.pair = p.id " +
+                "    WHERE v.\"user\" = :userId " +
+                "      AND p.left_candidate = :betterCandidate " +
+                "      AND v.vote_result = 'RIGHT_IS_BETTER' " +
                 ") " +
                 "SELECT p.id AS pair_id, 'RIGHT_IS_BETTER' AS vote_result " +
                 "FROM pairs p " +
-                "WHERE p.right_candidate = :betterCandidate AND p.left_candidate IN (SELECT wtwcid FROM wtwc) " +
+                "WHERE p.right_candidate IN (SELECT btbcid FROM btbc UNION SELECT :betterCandidate) " +
+                "  AND p.left_candidate IN (SELECT wtwcid FROM wtwc UNION SELECT :worseCandidate) " +
                 "UNION " +
-                "SELECT p.id AS pairId, 'LEFT_IS_BETTER' AS vote_result " +
+                "SELECT p.id as pair_id, 'LEFT_IS_BETTER' AS vote_result " +
                 "FROM pairs p " +
-                "WHERE p.left_candidate = :betterCandidate AND p.right_candidate IN (SELECT wtwcid FROM wtwc) " +
-                "UNION " +
-                "SELECT p.id AS pair_id, 'LEFT_IS_BETTER' AS vote_result " +
-                "FROM pairs p " +
-                "WHERE p.right_candidate = :worseCandidate AND p.left_candidate IN (SELECT btbcid FROM btbc) " +
-                "UNION " +
-                "SELECT p.id AS pairId, 'RIGHT_IS_BETTER' AS vote_result " +
-                "FROM pairs p " +
-                "WHERE p.left_candidate = :worseCandidate AND p.right_candidate IN (SELECT btbcid FROM btbc);";
+                "WHERE p.left_candidate  IN (SELECT btbcid FROM btbc UNION SELECT :betterCandidate) " +
+                "  AND p.right_candidate IN (SELECT wtwcid FROM wtwc UNION SELECT :worseCandidate)";
 
         SqlParameterSource namedParameters = new MapSqlParameterSource()
                 .addValue("userId", userId)

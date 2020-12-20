@@ -54,4 +54,15 @@ public class Candidate {
     public void setScore(int score) {
         this.score = score;
     }
+
+    @Override
+    public String toString() {
+        return "Candidate{" +
+                "id=" + id +
+                ", electionId=" + electionId +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", score=" + score +
+                '}';
+    }
 }

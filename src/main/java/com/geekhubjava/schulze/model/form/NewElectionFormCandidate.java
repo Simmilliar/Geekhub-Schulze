@@ -12,6 +12,11 @@ public class NewElectionFormCandidate {
     @NotNull
     private String description;
 
+    public NewElectionFormCandidate(@NotNull @NotEmpty String name, @NotNull String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }

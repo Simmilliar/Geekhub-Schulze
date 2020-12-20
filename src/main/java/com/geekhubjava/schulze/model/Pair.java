@@ -45,4 +45,14 @@ public class Pair {
     public void setRightCandidate(Candidate rightCandidate) {
         this.rightCandidate = rightCandidate;
     }
+
+    @Override
+    public String toString() {
+        return "Pair{" +
+                "id=" + id +
+                ", electionId=" + electionId +
+                ", leftCandidate=" + leftCandidate +
+                ", rightCandidate=" + rightCandidate +
+                '}';
+    }
 }

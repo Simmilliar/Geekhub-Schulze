@@ -18,6 +18,13 @@ public class NewElectionForm {
     @Size(min = 2, max = 50)
     private List<NewElectionFormCandidate> candidates;
 
+    public NewElectionForm(@NotNull @NotEmpty String title, @NotNull String description,
+                           @NotNull @Size(min = 2, max = 50) List<NewElectionFormCandidate> candidates) {
+        this.title = title;
+        this.description = description;
+        this.candidates = candidates;
+    }
+
     public String getTitle() {
         return title;
     }

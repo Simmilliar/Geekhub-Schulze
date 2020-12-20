@@ -16,8 +16,8 @@ import java.util.stream.Stream;
 @Service
 public class VotingService {
 
-    private VotingRepository votingRepository;
-    private SecureRandomStringService secureRandomStringService;
+    private final VotingRepository votingRepository;
+    private final SecureRandomStringService secureRandomStringService;
 
     @Autowired
     public VotingService(VotingRepository votingRepository, SecureRandomStringService secureRandomStringService) {
@@ -69,7 +69,7 @@ public class VotingService {
             List<Vote> missingVotesForCase = votingRepository.getMissingVotesForCase(
                     betterCandidateId, worseCandidateId, userId);
             Set<String> uniqueVoteIds = Stream
-                    .generate(() -> secureRandomStringService.getString())
+                    .generate(secureRandomStringService::getString)
                     .limit(missingVotesForCase.size())
                     .collect(Collectors.toSet());
             while (uniqueVoteIds.size() != missingVotesForCase.size()) {

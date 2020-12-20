@@ -15,6 +15,11 @@ public class RegistrationForm {
     @Size(min = 8)
     private String password;
 
+    public RegistrationForm(@NotNull @NotEmpty String login, @NotNull @NotEmpty @Size(min = 8) String password) {
+        this.login = login;
+        this.password = password;
+    }
+
     public String getLogin() {
         return login;
     }
