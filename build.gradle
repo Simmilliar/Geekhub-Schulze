@@ -31,7 +31,7 @@ dependencies {
 }
 
 processResources {
-//    dependsOn("ngBuild")
+    dependsOn("ngBuild")
 }
 
 def webappDir = "$projectDir/geekhub-schulze"

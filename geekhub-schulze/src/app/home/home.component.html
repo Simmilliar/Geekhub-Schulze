@@ -1,7 +1,7 @@
 <section>
   <h1>Elections</h1>
   <ul class="cards">
-    <li *ngFor="let election of elections">
+    <li *ngFor="let election of elections; let i = index;">
       <div class="card-election">
         <img class="card-img-top" src="/assets/waves.svg" alt="Election">
         <div class="card-body">
@@ -21,6 +21,9 @@
         </a>
       </div>
     </li>
+    <li class="m-0"></li>
+    <li class="m-0"></li>
+    <li class="m-0"></li>
   </ul>
 </section>
 
@@ -37,5 +40,8 @@
         </div>
       </div>
     </li>
+    <li class="m-0"></li>
+    <li class="m-0"></li>
+    <li class="m-0"></li>
   </ul>
 </section>

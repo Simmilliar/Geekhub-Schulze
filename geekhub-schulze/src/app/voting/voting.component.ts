@@ -25,6 +25,7 @@ export class VotingComponent implements OnInit {
       this.electionShareId = this.route.snapshot.paramMap.get('shareId')
       this.election = await this.http.get<ElectionModel>('/api/elections/' + this.electionShareId).toPromise()
       this.candidates = await this.http.get<VoteToSubmitModel>('/api/elections/' + this.electionShareId + '/vote').toPromise()
+      this.pairsAvailable = this.candidates != null
     } catch (err) {
       if (err.status === 401) {
         this.userService.resetUser()
@@ -40,6 +41,7 @@ export class VotingComponent implements OnInit {
         leftBetterThanRight
       }).toPromise()
       this.candidates = await this.http.get<VoteToSubmitModel>('/api/elections/' + this.electionShareId + '/vote').toPromise()
+      this.pairsAvailable = this.candidates != null
     } catch (err) {}
   }
 }
